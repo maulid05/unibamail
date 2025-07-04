@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('navs', function (Blueprint $table) {
+        Schema::create('relasis', function (Blueprint $table) {
             $table->id();
-            $table->string("Dashboard");
-            $table->string("Buat pesan");
-            $table->string("Tambah tujuan");
-            $table->string("Riwayat");
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('navs');
+        Schema::dropIfExists('relasis');
     }
 };
