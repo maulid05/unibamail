@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{GoogleController, RelasiController};
+use App\Http\Controllers\{GoogleController, RelasiController, SuratController};
 
 Route::get('/', function () {
     return view('target.index');
@@ -20,5 +20,6 @@ Route::middleware('auth')->group(function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-Route::get('/relasi', [RelasiController::class, 'index'])->name('relasi.index');
+Route::resource('relasi', RelasiController::class);
+Route::resource('surat', SuratController::class);
 require __DIR__.'/auth.php';

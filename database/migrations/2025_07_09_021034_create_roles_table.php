@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('relasis', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_pengirim')->nullable();
-            $table->integer('id_penerima')->nullable();
-            $table->integer('id_surat')->nullable();
+            $table->string('Role');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('relasis');
+        Schema::dropIfExists('roles');
     }
 };

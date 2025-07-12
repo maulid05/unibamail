@@ -11,7 +11,7 @@ class StoreRelasiRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreRelasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id_pengirim' => 'required|string|max:255',
+            'id_penerima' => 'required|string|max:255'
         ];
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Relasi, User};
+use App\Models\{Relasi, User, Role};
 use App\Http\Requests\StoreRelasiRequest;
 use App\Http\Requests\UpdateRelasiRequest;
+use Illuminate\Http\Request;
 
 class RelasiController extends Controller
 {
@@ -15,19 +16,34 @@ class RelasiController extends Controller
     {
         $search = $request->input('search');
 
-        $relasi = Relasi::when($search, function ($query, $search){
-            return $query->where('nama', 'like', '%{$search}%');
-        })->get();
+        $relasi = Relasi::where('id_pengirim', auth()->id())->get();
 
-        return view('relasi.index', compact('relasi', 'search'));
+        $user = User::when($search, function ($query, $search){
+            return $query->where('nama', 'like', '%'. $search . '%');
+        })->where('id', '!=', auth()->id() )->get();
+
+        $role = Role::all();
+
+        return view('target.relasi.index', compact('user' ,'relasi', 'search', 'role'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $search = $request->input('search');
         
+        $relasi = Relasi::pluck('id_penerima');
+
+        $user = User::when($search, function ($query, $search){
+            return $query->where('nama', 'like', '%'. $search . '%');
+        })->where('id', '!=', auth()->id() )->whereNotIn('id', $relasi)->get();
+
+
+        $role = Role::all();
+
+        return view('target.relasi.create', compact('search', 'user', 'role'));
     }
 
     /**
@@ -35,7 +51,11 @@ class RelasiController extends Controller
      */
     public function store(StoreRelasiRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        Relasi::create($validated);
+
+        return redirect()->route('relasi.create')->with('Berhasil di tambahkan');
     }
 
     /**
@@ -43,7 +63,6 @@ class RelasiController extends Controller
      */
     public function show(Relasi $relasi)
     {
-        //
     }
 
     /**
@@ -67,6 +86,7 @@ class RelasiController extends Controller
      */
     public function destroy(Relasi $relasi)
     {
-        //
+        $relasi->delete();
+        return redirect()->route('relasi.index')->with('Berhasil di hapus');
     }
 }

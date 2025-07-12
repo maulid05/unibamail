@@ -5,10 +5,15 @@
                 <div class="container-fluid px-5">
                     <h3 class="mt-4">Relasi</h13>
                     @auth
-                    <p>relasi untuk</p>
-                    <p>{{ Auth::user()->name }}</p>
+                    
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
                     @else
-                    <p>login terlebih dahulu</p>
+                    <p>Anda belum login</p>
                     @endauth                    
                 </div>
                 <div class="container-fluid px-5">

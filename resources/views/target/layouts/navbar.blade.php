@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                     <div class="container-fluid d-flex align-items-center justify-content-between py-2 px-3 bg-white shadow-sm">
     <!-- LOGO -->
-    <h3 class="mb-0 fw-bold px-2">UNIBAMAIL</h3>
+    <a href="{{ route('dashboard') }}"><h3 class="mb-0 fw-bold px-2">UNIBAMAIL</h3></a>
 
     <!-- Sidebar Toggle -->
     <button class="btn btn-outline-primary me-3" id="sidebarToggle">Toggle Menu</button>
@@ -17,12 +17,15 @@
         <ul class="navbar-nav ms-auto align-items-center">
             <!-- Link -->
             <li class="nav-item">
-                <form method="GET" action="{{ route('relasi.index') }}">
-                    <input type="text" name="search" placeholder="Cari produk..." value="{{ $search }}">
-                    <button type="submit">Cari</button>
-                </form>
+                <a class="nav-link" href="{{ route('relasi.index') }}" style="text-transform: none;">
+                Relasi
+                </a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('surat.index') }}" style="text-transform: none;">
+                History
+                </a>
+            </li>
             <!-- Auth Dropdown -->
             <li class="nav-item dropdown">
                 @auth

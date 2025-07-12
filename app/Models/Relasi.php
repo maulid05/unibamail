@@ -9,4 +9,10 @@ class Relasi extends Model
 {
     /** @use HasFactory<\Database\Factories\RelasiFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'id_pengirim',
+        'id_penerima',
+        'id__surat'
+    ];
 }
