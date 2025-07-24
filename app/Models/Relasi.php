@@ -13,6 +13,7 @@ class Relasi extends Model
     protected $fillable = [
         'id_pengirim',
         'id_penerima',
-        'id__surat'
-    ];
+        'id_surat',
+        'posisi'
+    ];  
 }

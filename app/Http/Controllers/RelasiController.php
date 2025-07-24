@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Relasi, User, Role};
+use App\Models\{Relasi, User, Role, Surat};
 use App\Http\Requests\StoreRelasiRequest;
 use App\Http\Requests\UpdateRelasiRequest;
 use Illuminate\Http\Request;
@@ -14,17 +14,11 @@ class RelasiController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->input('search');
-
-        $relasi = Relasi::where('id_pengirim', auth()->id())->get();
-
-        $user = User::when($search, function ($query, $search){
-            return $query->where('nama', 'like', '%'. $search . '%');
-        })->where('id', '!=', auth()->id() )->get();
-
-        $role = Role::all();
-
-        return view('target.relasi.index', compact('user' ,'relasi', 'search', 'role'));
+        $terima = Relasi::where('id_penerima', Auth()->id())->get();
+        $kirim = Relasi::where('id_pengirim', Auth()->id())->get();
+        $surat = Surat::all();
+        $user = User::all();
+        return view('target.relasi.index', compact('terima', 'kirim', 'surat', 'user'));
     }
 
     /**
@@ -38,12 +32,13 @@ class RelasiController extends Controller
 
         $user = User::when($search, function ($query, $search){
             return $query->where('nama', 'like', '%'. $search . '%');
-        })->where('id', '!=', auth()->id() )->whereNotIn('id', $relasi)->get();
+        })->where('id', '!=', auth()->id() )->get();
 
-
+        $id = $request->query('id');
+        
         $role = Role::all();
 
-        return view('target.relasi.create', compact('search', 'user', 'role'));
+        return view('target.relasi.create', compact('search', 'user', 'role', 'id'));
     }
 
     /**
@@ -52,10 +47,10 @@ class RelasiController extends Controller
     public function store(StoreRelasiRequest $request)
     {
         $validated = $request->validated();
-
+        dd($validated);
         Relasi::create($validated);
 
-        return redirect()->route('relasi.create')->with('Berhasil di tambahkan');
+        return redirect()->route('surat.index')->with('Berhasil di tambahkan');
     }
 
     /**

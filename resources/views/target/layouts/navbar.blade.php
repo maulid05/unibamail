@@ -1,66 +1,58 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <div class="container-fluid d-flex align-items-center justify-content-between py-2 px-3 bg-white shadow-sm">
-    <!-- LOGO -->
-    <a href="{{ route('dashboard') }}"><h3 class="mb-0 fw-bold px-2">UNIBAMAIL</h3></a>
+<nav class="navbar navbar-expand-lg bg-success navbar-dark shadow-sm">
+    <div class="container-fluid px-3">
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">UNIBAMAIL</a>
 
-    <!-- Sidebar Toggle -->
-    <button class="btn btn-outline-primary me-3" id="sidebarToggle">Toggle Menu</button>
+        <!-- Sidebar Toggle -->
+        <a class="btn btn-outline-light me-2 d-none d-lg-inline" href="{{ route('surat.create') }}">Kirim surat</a>
 
-    <!-- Navbar Toggle (Mobile) -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <!-- Mobile Navbar Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <!-- Navbar Content -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto align-items-center">
-            <!-- Link -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('relasi.index') }}" style="text-transform: none;">
-                Relasi
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('surat.index') }}" style="text-transform: none;">
-                History
-                </a>
-            </li>
-            <!-- Auth Dropdown -->
-            <li class="nav-item dropdown">
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <!-- Nav Links -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('kirim.index') }}">Relasi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('surat.index') }}">History</a>
+                </li>
+
+                <!-- User Dropdown -->
                 @auth
-                    <!-- Dropdown Toggle -->
-                    <a class="nav-link dropdown-toggle fw-semibold px-3" id="navbarDropdown" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ Auth::user()->name }}
-                    </a>
-
-                    <!-- Dropdown Menu -->
-                    <div class="dropdown-menu dropdown-menu-end shadow rounded" aria-labelledby="navbarDropdown">
-                        <!-- Profile -->
-                        <a href="{{ route('profile.edit') }}"
-                            class="dropdown-item text-dark px-3 py-2 rounded hover:bg-light">
-                            {{ __('Profile') }}
+                    <li class="nav-item dropdown ms-3">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                 data-bs-toggle="dropdown" aria-expanded="false">
+                                 {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded" aria-labelledby="userDropdown">
+                                 <li>
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}">{{ __('Profile') }}</a>
+                                 </li>
+                                 <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                 @csrf
+                                 <button type="submit" class="dropdown-item text-danger">
+                            {{ __('Log Out') }}
+                                 </button>
+                            </form>
+                                 </li>
+                            </ul>
+                    </li>
+                    @else
+                    <li class="nav-item ms-3">
+                        <a href="{{ url('auth/google') }}" class="btn btn-outline-light d-flex align-items-center gap-2">
+                             <i class="bi bi-google"></i> Login with Google
                         </a>
+                    </li>
+                    @endauth
 
-                        <!-- Logout -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                class="dropdown-item text-danger px-3 py-2 rounded hover:bg-light">
-                                {{ __('Log Out') }}
-                            </button>
-                        </form>
-                    </div>
-                @else
-                    <!-- Google Login -->
-                    <a href="{{ url('auth/google') }}"
-                        class="btn btn-outline-dark d-flex align-items-center gap-2 ms-3 px-3 py-2">
-                        <i class="bi bi-google"></i> Login with Google
-                    </a>
-                @endauth
-            </li>
-        </ul>
+                </ul>
+        </div>
     </div>
-</div>
-                </nav>
+</nav>

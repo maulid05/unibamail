@@ -2,14 +2,19 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{GoogleController, RelasiController, SuratController};
+use App\Http\Controllers\{GoogleController, RelasiController, SuratController, TargetController, TempelController, KirimController};
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
 
 Route::get('/', function () {
-    return view('target.index');
-});
-Route::get('/dashboard', function () {
-    return view('target.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return view('auth.login');
+})->name('login');
+
+Route::get('/dashboard', [TargetController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -22,4 +27,6 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
 
 Route::resource('relasi', RelasiController::class);
 Route::resource('surat', SuratController::class);
+Route::resource('tempel', TempelController::class);
+Route::resource('kirim', KirimController::class);
 require __DIR__.'/auth.php';

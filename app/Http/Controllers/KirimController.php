@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Relasi, Surat};
+use App\Http\Requests\StoreRelasiRequest;
+use App\Models\{User, Relasi, Surat};
 
-class TargetController extends Controller
+class KirimController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('target.index');
+        $data = User::where('id', '!=', Auth()->id())->get();
+        $surat = Surat::where('user_id', Auth()->id())->get();
+        //dd($data);
+        return view('target.kirim.index', compact('data', 'surat'));
     }
 
     /**
@@ -20,15 +24,18 @@ class TargetController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRelasiRequest $request)
     {
-        //
+        $validated = $request->validated();
+        //dd($validated);
+        Relasi::create($validated);
+        return redirect()->action([KirimController::class, 'index'])->with('success', 'Surat berhasil dikirim!');
     }
 
     /**

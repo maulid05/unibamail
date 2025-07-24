@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('surats', function (Blueprint $table) {
             $table->id();
-            $table->string('no_surat');
-            $table->string('perihal_surat');
+            $table->string('no_urut')->nullable();
+            $table->string('kode_instansi');
+            $table->string('jenis_surat');
+            $table->string('bulan');
+            $table->string('tahun');
+            $table->string('perihal');
             $table->date('tanggal');
             $table->string('isi');
-            $table->string('ttd_1');
-            $table->string('ttd_2');
-            $table->string('ttd_3')->nullable();
-            $table->string('ttd_4')->nullable();
-            $table->string('ttd_5')->nullable();
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

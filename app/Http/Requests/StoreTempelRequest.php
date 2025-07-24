@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRelasiRequest extends FormRequest
+class StoreTempelRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,12 +20,10 @@ class StoreRelasiRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {  
+    {
         return [
-            'id_pengirim' => 'required|string|max:255',
-            'id_penerima' => 'required|string|max:255',
-            'id_surat' => 'required|string|max:255',
-            'posisi' => 'required|string|max:255'
+            'file' => 'required|file|mimes:pdf,doc,docx|max:10240',
+            'id_surat' => 'required|string|max:255'
         ];
     }
 }

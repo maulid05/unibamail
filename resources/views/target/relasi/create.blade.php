@@ -39,9 +39,12 @@
                                         @method('POST')
                                         <input type="hidden" name="id_pengirim" value="{{ Auth::user()->id }}">
                                         <input type="hidden" name="id_penerima" value="{{ $row->id }}">
+                                        <input type="hidden" name="posisi" value="{{ $loop->iteration }}">
+                                        <input type="hidden" name="id_surat" value="{{ $id }}">
                                         <button class="btn btn-success btn-sm" type="submit">+</button>
                                     </form>
                                 </td>
+                                <td>{{ $id }}</td>
                             </tr>
                             @endforeach
                         </tbody>

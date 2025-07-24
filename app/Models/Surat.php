@@ -11,14 +11,21 @@ class Surat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'no_surat',
-        'perihal_surat',
+        'no_urut',
+        'kode_instansi',
+        'jenis_surat',
+        'bulan',
+        'tahun',
+        'perihal',
         'tanggal',
         'isi',
-        'ttd_1',
-        'ttd_2',
-        'ttd_3',
-        'ttd_4',
-        'ttd_5'
+        'user_id',
     ];
+
+    protected $with = ['user'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

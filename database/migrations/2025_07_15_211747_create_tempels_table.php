@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('relasis', function (Blueprint $table) {
+        Schema::create('tempels', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_pengirim')->nullable();
-            $table->integer('id_penerima')->nullable();
-            $table->integer('id_surat')->nullable();
-            $table->integer('posisi')->nullable();
+            $table->string('file');
+            $table->foreignId('id_surat')->references('id')->on('surats');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('relasis');
+        Schema::dropIfExists('tempels');
     }
 };
