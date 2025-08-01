@@ -14,11 +14,13 @@ class RelasiController extends Controller
      */
     public function index(Request $request)
     {
-        $terima = Relasi::where('id_penerima', Auth()->id())->get();
-        $kirim = Relasi::where('id_pengirim', Auth()->id())->get();
+        $terima = Relasi::where('id_penerima', Auth()->id())->orderBy('id', 'desc')->where('posisi', '0')->get();
+        $acc = Relasi::where('id_pengirim', Auth()->id())->orderBy('id', 'desc')->where('posisi', '1')->get();
+        $revisi = Relasi::where('id_pengirim', Auth()->id())->orderBy('id', 'desc')->where('posisi', '2')->get();
+        $kirim = Relasi::where('id_pengirim', Auth()->id())->orderBy('id', 'desc')->where('posisi', '0')->get();
         $surat = Surat::all();
         $user = User::all();
-        return view('target.relasi.index', compact('terima', 'kirim', 'surat', 'user'));
+        return view('target.relasi.index', compact('terima', 'kirim', 'surat', 'user', 'revisi', 'acc'));
     }
 
     /**
@@ -40,22 +42,14 @@ class RelasiController extends Controller
 
         return view('target.relasi.create', compact('search', 'user', 'role', 'id'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRelasiRequest $request)
     {
         $validated = $request->validated();
         dd($validated);
         Relasi::create($validated);
-
+        
         return redirect()->route('surat.index')->with('Berhasil di tambahkan');
     }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Relasi $relasi)
     {
     }
@@ -73,7 +67,9 @@ class RelasiController extends Controller
      */
     public function update(UpdateRelasiRequest $request, Relasi $relasi)
     {
-        //
+        $relasi->posisi =  $request->posisi;
+        $relasi->save();
+        return redirect()->back()->with('successs','Dikonfirmasi');
     }
 
     /**
@@ -82,6 +78,6 @@ class RelasiController extends Controller
     public function destroy(Relasi $relasi)
     {
         $relasi->delete();
-        return redirect()->route('relasi.index')->with('Berhasil di hapus');
+        return redirect()->route('relasi.index')->with('success','Berhasil di hapus');
     }
 }

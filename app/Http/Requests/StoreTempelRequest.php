@@ -22,7 +22,7 @@ class StoreTempelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|mimes:pdf,doc,docx|max:10240',
+            'file' => 'required|file|mimes:pdf,doc,docx,xlsx|max:10240',
             'id_surat' => 'required|string|max:255'
         ];
     }

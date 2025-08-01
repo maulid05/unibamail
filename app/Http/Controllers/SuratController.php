@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Surat, Relasi, Role, User};
+use App\Models\{Surat, Relasi, Role, User, Tempel};
 use App\Http\Requests\StoreSuratRequest;
 use App\Http\Requests\UpdateSuratRequest;
 use App\Http\Controllers\Auth;
@@ -17,7 +17,8 @@ class SuratController extends Controller
     {
         $surat = Surat::where('user_id', Auth()->id())->orderBy('id', 'desc')->get();
         $tujuan = User::where('id', '!=', Auth()->id())->get();
-        return view('target.surat.index', compact('surat', 'tujuan'));
+        $id_surat = $surat->pluck('id');
+        return view('target.surat.index', compact('surat', 'tujuan' ));
     }
 
     /**
@@ -68,7 +69,7 @@ class SuratController extends Controller
 
         $id_surat = Surat::where('user_id', Auth()->id())->latest()->first();
 
-        return view('target.surat.index', compact('id_surat'));
+        return view('target.tempel.create', compact('id_surat'));
     }
 
     /**
@@ -76,7 +77,9 @@ class SuratController extends Controller
      */
     public function show(Surat $surat)
     {
-        //
+        $file = Tempel::all();
+        $id = Relasi::where('id_surat', $surat->id)->where('id_penerima', Auth()->id())->first();
+        return view('target.surat.show', compact('surat', 'file', 'id'));
     }
 
     /**

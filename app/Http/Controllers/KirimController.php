@@ -14,7 +14,7 @@ class KirimController extends Controller
     public function index()
     {
         $data = User::where('id', '!=', Auth()->id())->get();
-        $surat = Surat::where('user_id', Auth()->id())->get();
+        $surat = Surat::where('user_id', Auth()->id())->orderBy('id', 'desc')->get();
         //dd($data);
         return view('target.kirim.index', compact('data', 'surat'));
     }

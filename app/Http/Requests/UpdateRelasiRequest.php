@@ -22,8 +22,7 @@ class UpdateRelasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_pengirim' => 'required|string|max:255',
-            'id_penerima' => 'required|string|max:255'
+            'posisi' => 'required|string|max:255'
         ];
     }
 }

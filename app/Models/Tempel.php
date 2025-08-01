@@ -15,10 +15,4 @@ class Tempel extends Model
         'id_surat'
     ];
     
-    protected $with = ['surat'];
-
-    public function surat() 
-    {
-        return $this->belongsTo(Surat::class, 'surat');
-    }
 }

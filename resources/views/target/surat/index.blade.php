@@ -1,58 +1,76 @@
- @extends('target.layouts.app')
- @section('content')
- <body>
-                <!-- Page content-->
-                <div class="container-fluid px-5">
-                    <a class="btn btn-success btn-sm mt-3" href="{{ route('surat.create') }}" style="text-transform: none;">
-                        halaman surat
-                    </a>
-                    <table class="container table table-borderred">
-                        <thead>
-                            <tr>
-                                <td>No</td>
-                                <td>Surat</td>
-                                <td>Action</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($surat as $row)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <h6>
-                                        {{ $row['no_urut'] }}/
-                                        {{ $row['kode_instansi'] }}/
-                                        {{ $row['jenis_surat'] }}/
-                                        {{ $row['bulan'] }}/
-                                        {{ $row['tahun'] }}
-                                    </h6>
-                                    <p>{{ $row['perihal'] }}</p>
+@extends('target.layouts.app')
 
-                                </td>
-                                <td>
-                                    <form action="{{ route('relasi.store') }}" method="post" class="d-inline">
+@section('content')
+<div class="container-fluid px-4 mt-5">
+
+    <!-- Heading -->
+    <div class="d-flex align-items-center mb-4">
+        <i class="bi bi-envelope-paper-fill text-success fs-3 me-2"></i>
+        <h2 class="fw-bold text-success mb-0">Daftar Surat</h2>
+    </div>
+
+    <!-- Card Wrapper -->
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-body p-0">
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle text-center mb-0">
+                    <thead class="table-success text-dark">
+                        <tr>
+                            <th style="width: 60px;">No</th>
+                            <th>Informasi Surat</th>
+                            <th style="width: 280px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($surat as $row)
+                        <tr>
+                            <td class="fw-semibold">{{ $loop->iteration }}</td>
+                            <td class="text-start">
+                                <div class="fw-bold text-success">
+                                    {{ $row['no_urut'] }}/{{ $row['kode_instansi'] }}/{{ $row['jenis_surat'] }}/{{ $row['bulan'] }}/{{ $row['tahun'] }}
+                                </div>
+                                <div class="text-muted small">
+                                    {{ $row['perihal'] }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                    <a href="{{ route('surat.show', $row->id) }}" class="btn btn-outline-success btn-sm shadow-sm d-flex align-items-center gap-1">
+                                        <i class="bi bi-eye-fill"></i> Lihat
+                                    </a>
+                                    <a href="{{ route('surat.edit', $row->id) }}" class="btn btn-outline-warning btn-sm shadow-sm d-flex align-items-center gap-1">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <form action="{{ route('surat.destroy', $row->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus surat ini?')" class="d-inline">
                                         @csrf
-                                        <input type="hidden" class="form-control" name="id_surat" value="{{ $row->id }}">
-                                        <input type="hidden" class="form-control" name="id_pengirim" value="{{ Auth::user()->id }}">
-                                        <div class="input-group">
-                                            <!-- Dropdown untuk memilih ID -->
-                                            <select name="id" class="form-select form-select-sm" required>
-                                                <option value="" disabled selected>Pilih ID</option>
-                                                @foreach ($tujuan as $row)
-                                                    <option name="id_penerima" value="{{ $row->id }}">{{ $row->name }}</option>
-                                                @endforeach
-                                                </select>
-                                            <!-- Tombol Kirim -->
-                                            <button type="submit" class="btn btn-primary btn-sm bi bi-send"> Kirim</button>
-                                        </div>
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm d-flex align-items-center gap-1">
+                                            <i class="bi bi-trash3-fill"></i> Hapus
+                                        </button>
                                     </form>
-                                    <a href="{{ route('surat.edit', $row->id)}}" class="text-light btn btn-warning btn-sm bi bi-pen mt-2"> Edit</a>
-                                    <a href="{{ route('surat.destroy', $row->id) }}" class="btn btn-danger btn-sm bi bi-trash mt-2"> Hapus</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>                  
-                </div>
-                
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="3" class="text-muted py-4">
+                                <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                                Tidak ada data surat.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Optional Pagination -->
+            {{-- <div class="mt-4 px-4">
+                {{ $surat->links() }}
+            </div> --}}
+
+        </div>
+    </div>
+</div>
 @endsection

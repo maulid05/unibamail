@@ -2,12 +2,11 @@
             <!-- Sidebar-->
              <div id="page-content-wrapper">
                 <!-- Top navigation-->
-                <div class="sidebar-heading border-bottom bg-light"><h3>LOGO</h3>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Dashboard</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Shortcuts</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Overview</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Events</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Profile</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a>
+                 <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white" >
+                    <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a>
                 </div>
             </div>
