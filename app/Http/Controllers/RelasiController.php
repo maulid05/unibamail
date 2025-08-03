@@ -44,9 +44,8 @@ class RelasiController extends Controller
     }
     public function store(StoreRelasiRequest $request)
     {
-        $validated = $request->validated();
-        dd($validated);
-        Relasi::create($validated);
+        dd($request);
+        Relasi::create($request->validated());
         
         return redirect()->route('surat.index')->with('Berhasil di tambahkan');
     }

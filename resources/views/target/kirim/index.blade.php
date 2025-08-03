@@ -24,7 +24,11 @@
                                     <form action="{{ route('kirim.store') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="id_pengirim" value="{{ Auth::user()->id }}">
-                                        <input type="hidden" name="id_penerima" value="{{ $row['id'] }}">
+                                        @if($row['sekretaris'] && $row['sekretaris'] != Auth::user()->id )
+                                        <input type="hidden" name="id_penerima" value="{{ $row['sekretaris'] }}">{{$row['sekretaris']}}
+                                        @else
+                                        <input type="hidden" name="id_penerima" value="{{ $row['id'] }}">{{$row['id']}}
+                                        @endif
                                         <input type="hidden" name="posisi" value="0">
 
                                         <div class="mb-3 mt-2">

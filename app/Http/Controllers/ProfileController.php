@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\{ProfileUpdateRequest,  SekretarisUpdateRequest};
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -16,9 +17,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $sekretaris = User::where('id', '!=', Auth()->id())->get();
+        $atasan = User::where('sekretaris', Auth()->id())->get();
         return view('profile.edit', [
             'user' => $request->user(),
-        ]);
+        ], compact('sekretaris', 'atasan'));
     }
 
     /**
@@ -36,6 +39,22 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
+    public function sekretaris(SekretarisUpdateRequest $request, $id)
+    {
+    $user = User::findOrFail($id);
+    $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+    $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+
 
     /**
      * Delete the user's account.

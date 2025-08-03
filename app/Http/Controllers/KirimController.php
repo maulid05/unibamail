@@ -32,9 +32,14 @@ class KirimController extends Controller
      */
     public function store(StoreRelasiRequest $request)
     {
-        $validated = $request->validated();
-        //dd($validated);
-        Relasi::create($validated);
+        //dd($request);
+        $role = Relasi::create($request->validated());
+        $data = [
+            'id_sekretaris' => $role->id_penerima,
+            'id_surat' => $role->id_surat,
+        ];
+        //dd($data);
+        app(\App\Http\Controllers\RoleController::class)->store($data);
         return redirect()->action([KirimController::class, 'index'])->with('success', 'Surat berhasil dikirim!');
     }
 

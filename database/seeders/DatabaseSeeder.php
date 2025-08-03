@@ -20,9 +20,5 @@ class DatabaseSeeder extends Seeder
             'email' => 'maulidansyah2005@gmail.com',
             'role' => 1,
         ]);
-
-        $this->call([
-            Roleseeder::class,
-        ]);
     }
 }

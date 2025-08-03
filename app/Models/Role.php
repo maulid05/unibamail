@@ -12,7 +12,8 @@ class role extends Model
 
     protected $table = 'roles';
     protected $fillable = [
-        'Role'
+        'id_sekretaris',
+        'id_surat'
     ];
 
     public function users()

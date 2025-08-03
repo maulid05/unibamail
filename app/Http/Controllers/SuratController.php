@@ -78,8 +78,15 @@ class SuratController extends Controller
     public function show(Surat $surat)
     {
         $file = Tempel::all();
+        $sekret = Role::where('id_surat', $surat->id)->first();
+        if ($sekret->id_sekretaris == Auth()->id()){
+            $atasan = User::where('sekretaris', Auth()->id())->get();
+            //dd($atasan);
+        }else {
+            
+        };
         $id = Relasi::where('id_surat', $surat->id)->where('id_penerima', Auth()->id())->first();
-        return view('target.surat.show', compact('surat', 'file', 'id'));
+        return view('target.surat.show', compact('surat', 'file', 'id', 'atasan'));
     }
 
     /**

@@ -5,15 +5,17 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
 
+            {{-- Judul Halaman --}}
             <div class="text-center mb-4">
                 <h2 class="fw-bold text-success">Edit Profil</h2>
                 <small class="text-muted">Perbarui informasi akun Anda</small>
             </div>
 
+            {{-- Kartu Form --}}
             <div class="card border-0 shadow rounded-4" style="background-color: #f5fdf7;">
                 <div class="card-body p-4">
 
-                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('edit.update', Auth::user()->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -25,31 +27,50 @@
                                  width="130" height="130"
                                  style="object-fit: cover;">
                             <div class="mt-3">
-                                <input type="file" name="avatar" accept="image/*" class="form-control form-control-sm w-50 mx-auto" onchange="previewAvatar(event)">
+                                <input type="file" name="avatar" accept="image/*"
+                                       class="form-control form-control-sm w-50 mx-auto"
+                                       onchange="previewAvatar(event)">
                             </div>
                         </div>
 
                         {{-- Nama --}}
                         <div class="mb-3">
                             <label for="name" class="form-label text-success">Nama</label>
-                            <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}" required>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   value="{{ old('name', Auth::user()->name) }}" required>
                         </div>
 
                         {{-- Email --}}
                         <div class="mb-3">
                             <label for="email" class="form-label text-success">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}" required>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   value="{{ old('email', Auth::user()->email) }}" required>
+                        </div>
+
+                        {{-- Sekretaris --}}
+                        <div class="mb-3">
+                            <label for="sekretaris" class="form-label text-success">Sekretaris</label>
+                            <select class="form-control" id="sekretaris" name="sekretaris" required>
+                                <option value="" disabled {{ Auth::user()->sekretaris ? '' : 'selected' }}>- Pilih Sekretaris -</option>
+                                @foreach($sekretaris as $data)
+                                    <option value="{{ $data['id'] }}"
+                                        {{ Auth::user()->sekretaris == $data['id'] ? 'selected' : '' }}>
+                                        {{ $data['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         {{-- Role (opsional tampil jika admin) --}}
                         @if(Auth::user()->role === 'admin')
                         <div class="mb-3">
                             <label for="role" class="form-label text-success">Role</label>
-                            <input type="text" class="form-control" id="role" name="role" value="{{ Auth::user()->role }}" readonly>
+                            <input type="text" class="form-control" id="role" name="role"
+                                   value="{{ Auth::user()->role }}" readonly>
                         </div>
                         @endif
 
-                        {{-- Tombol --}}
+                        {{-- Tombol Aksi --}}
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary rounded-pill px-4">
                                 <i class="bi bi-arrow-left me-1"></i> Batal
@@ -58,21 +79,52 @@
                                 <i class="bi bi-save me-1"></i> Simpan Perubahan
                             </button>
                         </div>
-                    </form>
-
+                    </div>
                 </div>
+            </form>
             </div>
-
         </div>
     </div>
-</div>
+    <div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+    <div class="card border-0 shadow rounded-4" style="background-color: #f5fdf7;">
+    <div class="card-body p-4">
+        <div class="mb-3">
+            <label for="sekretaris" class="form-label text-success">Atasan</label>
+        @foreach($atasan as $row)
+        <div class="d-flex align-items-center justify-content-between gap-3 p-3 border rounded shadow-sm bg-light">
+    <div class="d-flex flex-column">
+        <strong class="text-dark fs-6">{{ $row['name'] }}</strong>
+        <small class="text-muted">{{ $row['email'] }}</small>
+    </div>
+            <form action="{{ route('profile.sekretaris', $row->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" value="{{ $row['name'] }}" name="name">
+                    <input type="hidden" value="{{ $row['email'] }}" name="email">
+                    <input type="hidden" value="0" name="sekretaris">
 
-{{-- Live Preview Image --}}
-@push('scripts')
+                 <button class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-person-dash-fill me-1"></i> Berhenti
+                    </button>
+                </form>
+            </div>
+
+        @endforeach
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    {{-- Live Preview Avatar --}}
+    @push('scripts')
 <script>
     function previewAvatar(event) {
         const reader = new FileReader();
-        reader.onload = function(){
+        reader.onload = function () {
             const output = document.getElementById('previewImage');
             output.src = reader.result;
         };
