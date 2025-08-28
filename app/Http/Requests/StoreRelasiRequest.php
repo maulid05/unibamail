@@ -21,6 +21,7 @@ class StoreRelasiRequest extends FormRequest
      */
     public function rules(): array
     {  
+        //dd($this->all());
         return [
             'id_pengirim' => 'required|string|max:255',
             'id_penerima' => 'required|string|max:255',

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRelasiRequest extends FormRequest
+class StoreQrCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,9 +21,10 @@ class UpdateRelasiRequest extends FormRequest
      */
     public function rules(): array
     {
-        //dd($this->all());
         return [
-            'posisi' => 'required|string|max:255'
+            'qrcode' => 'required|string|max:255',
+            'id_relasi' => 'required|string|max:255',
+            'id_user' => 'required|string|max:255',
         ];
     }
 }

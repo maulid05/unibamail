@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Relasi, Surat};
+use App\Models\{Relasi, Surat, User};
 
 class TargetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('target.index');
+        $terbaru = Relasi::where('id_pengirim', Auth()->id())->get();
+        $user = User::all();
+        $surat = Surat::all();
+        $datasuratterima = Relasi::where('id_penerima', Auth()->id())->whereDate('updated_at', now())->get();
+        $datasuratdikirim = Relasi::where('id_pengirim', Auth()->id())->whereDate('updated_at', now())->get();
+        $dataatasan = User::where('sekretaris', Auth()->id())->whereDate('updated_at', now())->get();
+        //dd($terbaru);
+        return view('target.index', compact('terbaru', 'user', 'surat', 'datasuratterima', 'datasuratdikirim', 'dataatasan'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //

@@ -2,17 +2,15 @@
 
 @section('content')
 <div class="container py-5">
-    <!-- Heading -->
-    <div class="text-center mb-5">
-        <h2 class="fw-bold text-success mb-1">Formulir Surat Baru</h2>
-        <small class="text-muted">Lengkapi data surat dengan ringkas dan tepat</small>
-    </div>
+    <div class="card shadow-lg border-0 rounded-4 px-4 py-5 glass-card" style="max-width: 780px; margin:auto;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-success mb-1">Buat Surat Baru</h2>
+            <p class="text-muted small">Isi formulir berikut untuk membuat surat baru</p>
+        </div>
 
-    <!-- Card Form -->
-    <div class="card border-0 shadow-sm rounded-3 px-4 py-5" style="background-color: #f9fdfb;">
+        <!-- Form Surat -->
         <form action="{{ route('surat.store') }}" method="POST" class="needs-validation" novalidate>
             @csrf
-
             <!-- Nomor Surat -->
             <div class="mb-4">
                 <label class="form-label fw-semibold text-success">Nomor Surat</label>
@@ -58,11 +56,72 @@
 
             <!-- Submit Button -->
             <div class="d-grid">
-                <button type="submit" class="btn btn-success btn-lg rounded-pill">
+                <button type="submit" class="btn btn-gradient-success btn-lg rounded-pill">
                     <i class="bi bi-save me-1"></i> Simpan Surat
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Modal Lampiran -->
+<div class="modal fade" id="lampiranModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-lg border-0">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold text-success">
+          <i class="bi bi-paperclip me-2"></i> Upload Lampiran
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('tempel.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="surat_id" value="{{ session('surat_id') }}">
+            <div class="mb-3">
+                <label class="form-label text-success fw-semibold">Pilih File</label>
+                <input type="file" name="lampiran" class="form-control rounded-3" required>
+                <small class="text-muted">Format: PDF, DOCX, JPG (max 5MB)</small>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-gradient-success rounded-pill">
+                    <i class="bi bi-upload me-1"></i> Upload Lampiran
+                </button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Styling -->
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    .btn-gradient-success {
+        background: linear-gradient(135deg, #198754, #28a745);
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-gradient-success:hover {
+        background: linear-gradient(135deg, #157347, #1e7e34);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(25, 135, 84, 0.25);
+    }
+</style>
+
+<!-- Script untuk auto buka modal -->
+@if(session('success'))
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var modal = new bootstrap.Modal(document.getElementById('lampiranModal'));
+        modal.show();
+    });
+</script>
+@endif
+
 @endsection

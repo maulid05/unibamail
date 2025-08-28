@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Surat, Relasi, Role, User, Tempel};
+use App\Http\Controllers\QrCodeController;
+use App\Models\{Surat, Relasi, Role, User, Tempel, Qrcode};
 use App\Http\Requests\StoreSuratRequest;
 use App\Http\Requests\UpdateSuratRequest;
 use App\Http\Controllers\Auth;
@@ -75,41 +76,89 @@ class SuratController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Surat $surat)
-    {
-        $file = Tempel::all();
-        $sekret = Role::where('id_surat', $surat->id)->first();
-        if ($sekret->id_sekretaris == Auth()->id()){
-            $atasan = User::where('sekretaris', Auth()->id())->get();
-            //dd($atasan);
-        }else {
-            
-        };
-        $id = Relasi::where('id_surat', $surat->id)->where('id_penerima', Auth()->id())->first();
-        return view('target.surat.show', compact('surat', 'file', 'id', 'atasan'));
+    public function show(Surat $surat, QrCodeController $Qr)
+{
+    $file = Tempel::all();
+
+    $loginId = Auth()->id();
+    $sekret = false;
+
+    // cek pemilik surat
+    $pemilik = User::find($surat->user_id);
+    if ($pemilik && $pemilik->sekretaris == $loginId) {
+        $sekret = true;
     }
+
+    // cek penerima surat
+    $relasi = Relasi::where('id_surat', $surat->id)->get();
+    foreach ($relasi as $r) {
+        $penerima = User::find($r->id_user);
+        if ($penerima && $penerima->sekretaris == $loginId) {
+            $sekret = true;
+            break;
+        }
+    }
+
+    // kalau dia sekretaris → atasan = semua user yg punya sekretaris dia
+    if ($sekret) {
+        $atasan = User::where('sekretaris', $loginId)->get();
+    } else {
+        $atasan = User::all();
+    }
+
+    $id = Relasi::where('id_surat', $surat->id)->first();
+    $qr = $id ? Qrcode::where('id_relasi', $id->id)->get() : collect();
+
+    $balas = User::where('id', '!=', $loginId)->get();
+
+    return view('target.surat.show', compact('surat', 'file', 'id', 'atasan', 'sekret', 'balas', 'qr'));
+}
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Surat $surat)
-    {
-        //
+{
+    // ambil lampiran terkait surat ini
+    $tempel = Tempel::where('id_surat', $surat->id)->get();
+
+    return view('target.surat.edit', compact('surat', 'tempel'));
+}
+
+public function update(Request $request, Surat $surat)
+{
+    // update data utama surat
+    $surat->update([
+        'perihal' => $request->perihal,
+        'tanggal' => $request->tanggal,
+        'isi'     => $request->isi,
+    ]);
+
+    // jika ada file baru yang diupload
+    if ($request->hasFile('lampiran')) {
+        foreach ($request->file('lampiran') as $file) {
+            $namaFile = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('lampiran'), $namaFile);
+
+            Tempel::create([
+                'id_surat' => $surat->id,
+                'file'     => 'lampiran/'.$namaFile,
+            ]);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateSuratRequest $request, Surat $surat)
-    {
-        //
-    }
+    return redirect()->route('surat.show', $surat->id)
+                     ->with('success', 'Surat berhasil diperbarui');
+}
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Surat $surat)
+    public function destroy(Surat $id_surat)
     {
-        //
+        $relasi = Relasi::where('id_surat', $id_surat);
+        $relasi->delete();
+
     }
 }

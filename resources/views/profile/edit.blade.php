@@ -14,14 +14,13 @@
             {{-- Kartu Form --}}
             <div class="card border-0 shadow rounded-4" style="background-color: #f5fdf7;">
                 <div class="card-body p-4">
-
                     <form action="{{ route('edit.update', Auth::user()->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
                         {{-- Foto Profil --}}
                         <div class="text-center mb-4">
-                            <img id="previewImage" 
+                            <img id="previewImage"
                                  src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('images/default-avatar.png') }}"
                                  class="rounded-circle shadow border border-3 border-success"
                                  width="130" height="130"
@@ -53,15 +52,14 @@
                             <select class="form-control" id="sekretaris" name="sekretaris" required>
                                 <option value="" disabled {{ Auth::user()->sekretaris ? '' : 'selected' }}>- Pilih Sekretaris -</option>
                                 @foreach($sekretaris as $data)
-                                    <option value="{{ $data['id'] }}"
-                                        {{ Auth::user()->sekretaris == $data['id'] ? 'selected' : '' }}>
+                                    <option value="{{ $data['id'] }}" {{ Auth::user()->sekretaris == $data['id'] ? 'selected' : '' }}>
                                         {{ $data['name'] }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
 
-                        {{-- Role (opsional tampil jika admin) --}}
+                        {{-- Role (khusus admin) --}}
                         @if(Auth::user()->role === 'admin')
                         <div class="mb-3">
                             <label for="role" class="form-label text-success">Role</label>
@@ -79,48 +77,72 @@
                                 <i class="bi bi-save me-1"></i> Simpan Perubahan
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </form>
             </div>
+
         </div>
     </div>
-    <div class="container py-5">
+</div>
+
+{{-- Daftar Atasan --}}
+<div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-    <div class="card border-0 shadow rounded-4" style="background-color: #f5fdf7;">
-    <div class="card-body p-4">
-        <div class="mb-3">
-            <label for="sekretaris" class="form-label text-success">Atasan</label>
-        @foreach($atasan as $row)
-        <div class="d-flex align-items-center justify-content-between gap-3 p-3 border rounded shadow-sm bg-light">
-    <div class="d-flex flex-column">
-        <strong class="text-dark fs-6">{{ $row['name'] }}</strong>
-        <small class="text-muted">{{ $row['email'] }}</small>
-    </div>
-            <form action="{{ route('profile.sekretaris', $row->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" value="{{ $row['name'] }}" name="name">
-                    <input type="hidden" value="{{ $row['email'] }}" name="email">
-                    <input type="hidden" value="0" name="sekretaris">
-
-                 <button class="btn btn-outline-danger btn-sm">
-                        <i class="bi bi-person-dash-fill me-1"></i> Berhenti
-                    </button>
-                </form>
+            <div class="card border-0 shadow rounded-4" style="background-color: #f5fdf7;">
+                <div class="card-body p-4">
+                    <h5 class="text-success mb-3">Atasan</h5>
+                    @forelse($atasan as $row)
+                        <div class="d-flex align-items-center justify-content-between gap-3 p-3 mb-2 border rounded shadow-sm bg-light">
+                            <div class="d-flex flex-column">
+                                <strong class="text-dark fs-6">{{ $row['name'] }}</strong>
+                                <small class="text-muted">{{ $row['email'] }}</small>
+                            </div>
+                            <form action="{{ route('profile.sekretaris', $row->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" value="{{ $row['name'] }}" name="name">
+                                <input type="hidden" value="{{ $row['email'] }}" name="email">
+                                <input type="hidden" value="0" name="sekretaris">
+                                <button class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-person-dash-fill me-1"></i> Berhenti
+                                </button>
+                            </form>
+                        </div>
+                    @empty
+                        <p class="text-muted">Belum ada atasan.</p>
+                    @endforelse
+                </div>
             </div>
-
-        @endforeach
         </div>
     </div>
+</div>
+
+{{-- Daftar Surat --}}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow rounded-4" style="background-color: #f5fdf7;">
+                <div class="card-body p-4">
+                    <h5 class="text-success mb-3">Daftar Surat</h5>
+                    @forelse($surat as $row)
+                        <div class="d-flex flex-column p-3 mb-2 border rounded shadow-sm bg-light">
+                            <strong class="text-dark fs-6">
+                                {{ $row['no_urut'] }}/{{ $row['kode_instansi'] }}/{{ $row['jenis_surat'] }}/{{ $row['bulan'] }}/{{ $row['tahun'] }}
+                            </strong>
+                            <small class="text-muted">{{ $row['perihal'] }}</small>
+                        </div>
+                    @empty
+                        <p class="text-muted">Belum ada surat.</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
-    </div>
-    </div>
-    
-    {{-- Live Preview Avatar --}}
-    @push('scripts')
+</div>
+
+{{-- Script Preview Avatar --}}
+@push('scripts')
 <script>
     function previewAvatar(event) {
         const reader = new FileReader();
@@ -132,4 +154,5 @@
     }
 </script>
 @endpush
+
 @endsection

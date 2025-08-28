@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\{QrCodeController, SuratController};
 use App\Models\{Relasi, User, Role, Surat};
 use App\Http\Requests\StoreRelasiRequest;
 use App\Http\Requests\UpdateRelasiRequest;
+use SimpleSoftwareIO\QrCode\Facades\QrCode  as QRgenerator;
 use Illuminate\Http\Request;
 
 class RelasiController extends Controller
@@ -14,12 +16,13 @@ class RelasiController extends Controller
      */
     public function index(Request $request)
     {
-        $terima = Relasi::where('id_penerima', Auth()->id())->orderBy('id', 'desc')->where('posisi', '0')->get();
-        $acc = Relasi::where('id_pengirim', Auth()->id())->orderBy('id', 'desc')->where('posisi', '1')->get();
-        $revisi = Relasi::where('id_pengirim', Auth()->id())->orderBy('id', 'desc')->where('posisi', '2')->get();
-        $kirim = Relasi::where('id_pengirim', Auth()->id())->orderBy('id', 'desc')->where('posisi', '0')->get();
+        $terima = Relasi::where('id_penerima', Auth()->id())->where('posisi', 0)->orderBy('id', 'desc')->get();
+        $acc = Relasi::where('id_pengirim', Auth()->id())->where('posisi', 1)->orderBy('id', 'desc')->get();
+        $revisi = Relasi::where('id_pengirim', Auth()->id())->where('posisi', 2)->orderBy('id', 'desc')->get();
+        $kirim = Relasi::where('id_pengirim', Auth()->id())->where('posisi', 0)->orderBy('id', 'desc')->get();
         $surat = Surat::all();
         $user = User::all();
+        //dd($surat);
         return view('target.relasi.index', compact('terima', 'kirim', 'surat', 'user', 'revisi', 'acc'));
     }
 
@@ -42,9 +45,18 @@ class RelasiController extends Controller
 
         return view('target.relasi.create', compact('search', 'user', 'role', 'id'));
     }
-    public function store(StoreRelasiRequest $request)
+    public function store(StoreRelasiRequest $request )
     {
-        dd($request);
+        //dd($request);
+        //dd($validated);
+        Relasi::where('id_pengirim', $request->id_pengirim)
+        ->where('id_surat', $request->id_surat)
+        ->delete();
+        
+        Relasi::where('id_penerima', $request->id_penerima)
+        ->where('id_surat', $request->id_surat)
+        ->delete();
+        
         Relasi::create($request->validated());
         
         return redirect()->route('surat.index')->with('Berhasil di tambahkan');
@@ -64,10 +76,23 @@ class RelasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRelasiRequest $request, Relasi $relasi)
+    public function update(UpdateRelasiRequest $request, Relasi $relasi, QrCodeController $Qr, SuratController $delete)
     {
-        $relasi->posisi =  $request->posisi;
-        $relasi->save();
+        //  dd($request);
+        $relasi->update([
+            'posisi' => $request->posisi
+        ]);
+
+        //$id = Relasi::where('id_penerima', Auth()->id())->where('id_surat', $relasi->id_surat);
+        //dd($relasi, $id);
+        
+        //RelasiController::destroy();
+        
+        //$qrData = "Relasi ID: {$relasi->id}, Penerima ID: {$relasi->id_penerima}";
+        $qrData = 'https://9df0bf145b7f.ngrok-free.app/surat/show?id_relasi=' . $relasi->id;
+        $Qr->store($relasi->id, $relasi->id_penerima, $qrData);
+        
+        //dd($qrData);
         return redirect()->back()->with('successs','Dikonfirmasi');
     }
 

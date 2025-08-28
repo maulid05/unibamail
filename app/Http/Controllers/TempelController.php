@@ -36,8 +36,7 @@ class TempelController extends Controller
             'id_surat' => $request->id_surat,
         ]);
 
-        $surat = Surat::where('user_id', Auth()->id())->get();
-        return view('target.index', compact('surat'));
+        return redirect('dashboard');
     }
 
     /**

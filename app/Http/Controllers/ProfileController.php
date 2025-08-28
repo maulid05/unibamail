@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\User;
+use App\Models\{User, Relasi};
 
 class ProfileController extends Controller
 {
@@ -19,9 +19,10 @@ class ProfileController extends Controller
     {
         $sekretaris = User::where('id', '!=', Auth()->id())->get();
         $atasan = User::where('sekretaris', Auth()->id())->get();
+        $surat = Relasi::where('id_penerima' , Auth()->id())->where('posisi', 3)->get();
         return view('profile.edit', [
             'user' => $request->user(),
-        ], compact('sekretaris', 'atasan'));
+        ], compact('sekretaris', 'atasan', 'surat'));
     }
 
     /**

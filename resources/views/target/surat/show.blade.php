@@ -50,7 +50,19 @@
                     </div>
                 </div>
             </div>
-
+            <div class="mb-3">
+                <div class="d-flex align-items-start">
+                    <i class="bi bi-file-earmark-text text-success fs-5 me-3"></i>
+                    <div>
+                        <strong>Di Setujui oleh:</strong><br>
+                        @foreach($qr as $setuju)
+                        <div class="text-muted mt-1">
+                           <img src="{{ asset('storage/' . $setuju['qrcode']) }}" alt="QR Code">
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
             @foreach($file as $data)
                 @if($data['id_surat'] == $surat->id)
                 <div class="mb-3">
@@ -73,19 +85,54 @@
                 </a>
             </div>
             @else
-            <!-- Tombol Aksi -->
             <div class="d-flex justify-content-end gap-2 flex-wrap mt-4">
                 <a href="{{ url()->previous() }}" class="btn btn-outline-secondary rounded-pill px-4 py-2">
                      <i class="bi bi-arrow-left-circle me-2"></i> Kembali
                 </a>
+                @if($sekret)
+                <form id="teruskan" action="{{ route('relasi.store') }}" method="POST">
+                    @csrf
+                    @method('POST')
+                    <input type="hidden" value="{{ $surat->id }}" name="id_surat">
 
-                <form action="{{ route('relasi.update', $id->id) }}" method="post">
+                    <select name="id_pengirim" id="select-atasan" class="btn btn-outline-info btn-sm rounded-pill px-4 py-2" required>
+                        <option value="" default selected>Dari : ___</option>
+                        @foreach($balas as $user)
+                        <option value="{{ $user['id'] }}"> Dari : 
+                            {{ $user['name'] }} / {{ $user['id'] }}         
+                        </option>
+                        @endforeach
+                    </select>
+
+                    <select name="id_penerima" id="select-atasan" class="btn btn-outline-info btn-sm rounded-pill px-4 py-2" required>
+                        <option value="" disabled selected>Ke : _____ </option>
+                        @foreach($atasan as $user)
+                        <option value="{{ $user['id'] }}">Ke :
+                            {{ $user['name'] }} / {{ $user['id'] }}         
+                        </option>
+                        @endforeach
+                    </select>
+
+                    <select name="posisi" id="select-atasan" class="btn btn-outline-info btn-sm rounded-pill px-4 py-2" required>
+                        <option value="" disabled selected>-- Status --</option>
+                        <option value="0">Teruskan</option>
+                        <option value="1">ACC</option>
+                        <option value="2">Revisi</option>
+                    </select>
+                    
+                    <button type="submit" class="btn btn-outline-success rounded-pill px-4 py-2">
+                        <i class="bi bi-pencil-square me-2"></i> Kirim
+                    </button>
+                </form>
+                @else
+                <form action="{{ route('relasi.update', $id->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <input type="hidden" value="2" name="posisi">
-                    <button type="submit" class="btn btn-outline-warning rounded-pill px-4 py-2"><i class="bi bi-pencil-square me-2"></i> Revisi</button>
+                    <button type="submit" class="btn btn-outline-warning rounded-pill px-4 py-2">
+                        <i class="bi bi-pencil-square me-2"></i> Revisi
+                    </button>
                 </form>
-                
                 <form action="{{ route('relasi.update', $id->id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -94,6 +141,7 @@
                         <i class="bi bi-pencil-square me-2"></i> ACC
                     </button>
                 </form>
+                @endif
             </div>
             @endif
         </div>
